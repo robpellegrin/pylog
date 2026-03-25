@@ -182,13 +182,13 @@ class LogViewer:
         if not self.monitored_file.has_changed():
             return
 
-        new_lines = self.monitored_file.read()
+        new_lines: list[str] = self.monitored_file.read()
 
         self.lines = new_lines
 
     def handle_input(self) -> None:
         try:
-            key = self.stdscr.getch()
+            key: int = self.stdscr.getch()
         except curses.error:
             return
 
