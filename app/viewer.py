@@ -9,7 +9,7 @@ import curses
 import logging
 import re
 from collections import namedtuple
-from typing import List, Optional
+from typing import Optional
 
 from monitor import FileMonitor
 
@@ -35,9 +35,9 @@ class LogViewer:
 
         self.win = curses.newwin(self.height, self.width, 0, 0)
 
-        self.monitored_file = file
+        self.monitored_file: FileMonitor = file
 
-        self.lines: List[str] = []
+        self.lines: list[str] = []
         self.scroll_offset = 0
         self.selected_line = 0
         self.follow_mode = True
@@ -94,7 +94,7 @@ class LogViewer:
             1, self.width - len(last_update)-4, last_update, curses.A_DIM
         )
 
-    def _draw_logfile(self):
+    def _draw_logfile(self) -> None:
         visible_height = self.height - 4
 
         visible_lines = self.lines[
@@ -102,12 +102,12 @@ class LogViewer:
         ]
 
         for i, raw_line in enumerate(visible_lines):
-            parsed = self._split_line(raw_line)
+            parsed: Optional[LogLine] = self._split_line(raw_line)
             if not parsed:
                 continue
 
-            y = i + self.VIEW_TOP
-            global_index = self.scroll_offset + i
+            y: int = i + self.VIEW_TOP
+            global_index: int = self.scroll_offset + i
 
             # Highlight selected line
             if global_index == self.selected_line and not self.follow_mode:
@@ -150,11 +150,11 @@ class LogViewer:
             except curses.error:
                 pass
 
-    def _draw_indicators(self):
-        visible_height = self.height - 4
+    def _draw_indicators(self) -> None:
+        visible_height: int = self.height - 4
 
-        has_above = self.scroll_offset > 0
-        has_below = self.scroll_offset + visible_height < len(self.lines)
+        has_above: int = self.scroll_offset > 0
+        has_below: int = self.scroll_offset + visible_height < len(self.lines)
 
         self.win.attron(curses.color_pair(15) | curses.A_BOLD)
 
@@ -169,7 +169,7 @@ class LogViewer:
 
         self.win.attroff(curses.color_pair(15) | curses.A_DIM)
 
-    def draw(self):
+    def draw(self) -> None:
         self.win.erase()
 
         self._draw_header()
@@ -178,7 +178,7 @@ class LogViewer:
 
         self.win.noutrefresh()
 
-    def update(self):
+    def update(self) -> None:
         if not self.monitored_file.has_changed():
             return
 
@@ -186,7 +186,7 @@ class LogViewer:
 
         self.lines = new_lines
 
-    def handle_input(self):
+    def handle_input(self) -> None:
         try:
             key = self.stdscr.getch()
         except curses.error:
@@ -245,7 +245,7 @@ class LogViewer:
         elif self.selected_line >= self.scroll_offset + height:
             self.scroll_offset = self.selected_line - height + 1
 
-    def run(self):
+    def run(self) -> None:
         while True:
             self.handle_input()
             self.update()
