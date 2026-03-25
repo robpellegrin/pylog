@@ -20,8 +20,8 @@ class FileMonitor:
         self._file: Path = file
 
         # Track last modification time.
-        self._mtime = None
-        self._last_check = None
+        self._mtime: float = 0.0
+        self._last_check: float = 0.0
         self._poll_interval = 1.0
 
     def read(self) -> list[str]:
