@@ -231,6 +231,9 @@ class LogViewer:
             self.scroll_offset = max_offset
             self.follow_mode = True
 
+        elif key == curses.KEY_RESIZE:
+            self.update()
+
         elif key == ord("f"):
             self.follow_mode = not self.follow_mode
 
