@@ -11,7 +11,7 @@ import re
 from collections import namedtuple
 from typing import Optional
 
-from monitor import FileMonitor
+from utils.file_monitor import FileMonitor
 
 log = logging.getLogger(__name__)
 
