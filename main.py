@@ -21,19 +21,18 @@ def main(stdscr: curses.window) -> None:
 
     file = LogMonitor(Path(args.file))
 
-    # win = LogViewer(stdscr=stdscr, file=file)
-    # win.run()
-
     app = App(file, stdscr)
     app.run()
 
 
 if __name__ == '__main__':
+    logfile = Path(__file__)
+    Path("logs").mkdir(exist_ok=True)
+
     # Setup logging.
-    logfile = Path(__file__).name
     logging.basicConfig(
-        filename=f"logs/{logfile}.log",
-        level=logging.NOTSET,
+        filename=f"logs/{logfile.stem}.log",
+        level=logging.INFO,
         filemode='w',
         format="%(asctime)s [%(levelname)s] %(message)s",
     )
