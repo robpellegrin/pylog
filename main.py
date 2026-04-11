@@ -1,9 +1,9 @@
 """
 @file:    main.py
 @author:  Rob Pellegrin
-@date:    03-23-2026
+@date:    03/23/2026
 
-@updated: 03-23-2026
+@updated: 04/10/2026
 
 """
 
@@ -11,9 +11,9 @@ import curses
 import logging
 from pathlib import Path
 
-from utils.file_monitor import FileMonitor
-from app.viewer import LogViewer
+from app.app import App
 from app.cli import process_args
+from utils.file_monitor import FileMonitor
 
 
 def main(stdscr: curses.window) -> None:
@@ -21,8 +21,11 @@ def main(stdscr: curses.window) -> None:
 
     file = FileMonitor(Path(args.file))
 
-    win = LogViewer(stdscr=stdscr, file=file)
-    win.run()
+    # win = LogViewer(stdscr=stdscr, file=file)
+    # win.run()
+
+    app = App(file, stdscr)
+    app.run()
 
 
 if __name__ == '__main__':
