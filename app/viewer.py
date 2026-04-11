@@ -92,7 +92,7 @@ class LogViewer:
 
         try:
             self.win.addstr(
-                1, self.width - len(last_update)-4, last_update, curses.A_DIM
+                1, self.width - len(last_update) - 4, last_update, curses.A_DIM
             )
         except curses.error:
             pass
