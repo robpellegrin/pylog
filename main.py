@@ -11,8 +11,8 @@ import curses
 import logging
 from pathlib import Path
 
-from app.core import App
 from app.cli import process_args
+from app.core import App
 from app.monitor import LogMonitor
 
 
@@ -25,7 +25,7 @@ def main(stdscr: curses.window) -> None:
     app.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logfile = Path(__file__)
     Path("logs").mkdir(exist_ok=True)
 
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     logging.basicConfig(
         filename=f"logs/{logfile.stem}.log",
         level=logging.INFO,
-        filemode='w',
+        filemode="w",
         format="%(asctime)s [%(levelname)s] %(message)s",
     )
 
