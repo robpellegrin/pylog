@@ -90,9 +90,12 @@ class LogViewer:
         text = self.monitored_file.time_since_last_change()
         last_update = f"Updated: {text}s"
 
-        self.win.addstr(
-            1, self.width - len(last_update)-4, last_update, curses.A_DIM
-        )
+        try:
+            self.win.addstr(
+                1, self.width - len(last_update)-4, last_update, curses.A_DIM
+            )
+        except curses.error:
+            pass
 
     def _draw_logfile(self) -> None:
         visible_height = self.height - 4
