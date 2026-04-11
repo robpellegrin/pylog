@@ -9,8 +9,8 @@
 
 import curses
 
-from app.input import InputHandler
-from app.viewer import LogViewer
+from cursedlog.input import InputHandler
+from cursedlog.viewer import LogViewer
 
 
 class App:

@@ -11,9 +11,9 @@ import curses
 import logging
 from pathlib import Path
 
-from app.cli import process_args
-from app.core import App
-from app.monitor import LogMonitor
+from cursedlog.cli import process_args
+from cursedlog.core import App
+from cursedlog.monitor import LogMonitor
 
 
 def main(stdscr: curses.window) -> None:
