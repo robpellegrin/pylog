@@ -14,7 +14,7 @@ from pathlib import Path
 log = logging.getLogger(__name__)
 
 
-class FileMonitor:
+class LogMonitor:
 
     def __init__(self, file: Path):
         self._file: Path = file

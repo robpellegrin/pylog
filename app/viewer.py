@@ -11,7 +11,7 @@ import re
 from collections import namedtuple
 from typing import Optional
 
-from utils.file_monitor import FileMonitor
+from utils.log_monitor import LogMonitor
 
 log = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class LogViewer:
 
         self.win = curses.newwin(self.height, self.width, 0, 0)
 
-        self.monitored_file: FileMonitor = app.file
+        self.monitored_file: LogMonitor = app.file
 
         self.lines: list[str] = []
         self.scroll_offset = 0

@@ -13,13 +13,13 @@ from pathlib import Path
 
 from app.app import App
 from app.cli import process_args
-from utils.file_monitor import FileMonitor
+from utils.log_monitor import LogMonitor
 
 
 def main(stdscr: curses.window) -> None:
     args = process_args()
 
-    file = FileMonitor(Path(args.file))
+    file = LogMonitor(Path(args.file))
 
     # win = LogViewer(stdscr=stdscr, file=file)
     # win.run()
