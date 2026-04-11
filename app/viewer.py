@@ -29,13 +29,13 @@ class LogViewer:
 
     VIEW_TOP = 3
 
-    def __init__(self, stdscr: curses.window, file: FileMonitor):
-        self.stdscr = stdscr
-        self.height, self.width = stdscr.getmaxyx()
+    def __init__(self, app):
+        self.stdscr = app.stdscr
+        self.height, self.width = self.stdscr.getmaxyx()
 
         self.win = curses.newwin(self.height, self.width, 0, 0)
 
-        self.monitored_file: FileMonitor = file
+        self.monitored_file: FileMonitor = app.file
 
         self.lines: list[str] = []
         self.scroll_offset = 0
@@ -173,6 +173,7 @@ class LogViewer:
         self.win.attroff(curses.color_pair(15) | curses.A_DIM)
 
     def draw(self) -> None:
+        self.height, self.width = self.stdscr.getmaxyx()
         self.win.erase()
 
         self._draw_header()
@@ -189,57 +190,6 @@ class LogViewer:
 
         self.lines = new_lines
 
-    def handle_input(self) -> None:
-        try:
-            key: int = self.stdscr.getch()
-        except curses.error:
-            return
-
-        if key == ord("q"):
-            raise KeyboardInterrupt
-
-        view_height = self.height - 4
-        max_offset = max(0, len(self.lines) - view_height)
-
-        if key in (ord("j"), curses.KEY_DOWN):
-            self.selected_line = min(
-                self.selected_line + 1, len(self.lines) - 1)
-            self._adjust_offset()
-            self.follow_mode = False
-
-        elif key == curses.KEY_ENTER:
-            # Display full log entry in subwindow.
-            pass
-
-        elif key == curses.KEY_F5:
-            # Display filter window.
-            pass
-
-        elif key in (ord("k"), curses.KEY_UP):
-            self.selected_line = max(self.selected_line - 1, 0)
-            self._adjust_offset()
-            self.follow_mode = False
-
-        elif key == curses.KEY_NPAGE:
-            self.scroll_offset = min(
-                self.scroll_offset + view_height, max_offset
-            )
-            self.follow_mode = False
-
-        elif key == curses.KEY_PPAGE:
-            self.scroll_offset = max(self.scroll_offset - view_height, 0)
-            self.follow_mode = False
-
-        elif key == ord("G"):
-            self.scroll_offset = max_offset
-            self.follow_mode = True
-
-        elif key == curses.KEY_RESIZE:
-            self.update()
-
-        elif key == ord("f"):
-            self.follow_mode = not self.follow_mode
-
     def _adjust_offset(self) -> None:
         """Adjust the top-of-window offset to keep the cursor visible."""
 
@@ -250,18 +200,3 @@ class LogViewer:
 
         elif self.selected_line >= self.scroll_offset + height:
             self.scroll_offset = self.selected_line - height + 1
-
-    def run(self) -> None:
-        while True:
-            self.handle_input()
-            self.update()
-
-            if self.follow_mode:
-                view_height = self.height - 4
-                self.scroll_offset = max(
-                    0, len(self.lines) - view_height
-                )
-                self.selected_line = max(0, len(self.lines) - 1)
-
-            self.draw()
-            curses.doupdate()
