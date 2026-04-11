@@ -47,7 +47,7 @@ class App:
         curses.use_default_colors()
 
         # Hide cursor
-        curses.curs_set(0)
+        curses.curs_set(False)
 
         # Define color pairs
         curses.init_pair(0, curses.COLOR_WHITE, -1)
