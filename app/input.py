@@ -1,3 +1,13 @@
+"""
+@file:    input.py
+@author:  Rob Pellegrin
+@date:    04/10/2026
+
+@updated: 04/10/2026
+
+"""
+
+
 import curses
 from typing import TYPE_CHECKING
 

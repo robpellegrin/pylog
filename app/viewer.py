@@ -1,8 +1,9 @@
 """
-@file:    log_viewer.py
+@file:    viewer.py
 @author:  Rob Pellegrin
 @date:    03-23-2026
-@updated: 03-24-2026
+
+@updated: 04-10-2026
 """
 
 import curses
@@ -11,7 +12,7 @@ import re
 from collections import namedtuple
 from typing import Optional
 
-from utils.log_monitor import LogMonitor
+from app.monitor import LogMonitor
 
 log = logging.getLogger(__name__)
 

@@ -1,9 +1,9 @@
 """
 @file:    main.py
 @author:  Rob Pellegrin
-@date:    03/23/2026
+@date:    03-23-2026
 
-@updated: 04/10/2026
+@updated: 04-10-2026
 
 """
 
@@ -11,9 +11,9 @@ import curses
 import logging
 from pathlib import Path
 
-from app.app import App
+from app.core import App
 from app.cli import process_args
-from utils.log_monitor import LogMonitor
+from app.monitor import LogMonitor
 
 
 def main(stdscr: curses.window) -> None:

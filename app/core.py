@@ -1,5 +1,5 @@
 """
-@file:    log_viewer.py
+@file:    core.py
 @author:  Rob Pellegrin
 @date:    04/10/2026
 
@@ -10,7 +10,7 @@
 import curses
 
 from app.viewer import LogViewer
-from utils.input_handler import InputHandler
+from app.input import InputHandler
 
 
 class App:
