@@ -12,6 +12,6 @@ import argparse
 
 def process_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Process a file")
-    parser.add_argument('file', help="Path to log file")
+    parser.add_argument("file", help="Path to log file")
 
     return parser.parse_args()
