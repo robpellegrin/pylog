@@ -17,6 +17,11 @@ class App:
 
     def __init__(self, file, stdscr: curses.window) -> None:
         self.stdscr = stdscr
+        self.stdscr.nodelay(True)
+        self.stdscr.timeout(100)
+
+        self._init_colors()
+
         self.follow_mode = True
         self.input_handler = InputHandler(self)
         self.file = file
@@ -36,3 +41,19 @@ class App:
 
             self.window.draw()
             curses.doupdate()
+
+    def _init_colors(self):
+        curses.start_color()
+        curses.use_default_colors()
+
+        # Hide cursor
+        curses.curs_set(0)
+
+        # Define color pairs
+        curses.init_pair(0, curses.COLOR_WHITE, -1)
+        curses.init_pair(1, curses.COLOR_CYAN, -1)
+        curses.init_pair(2, curses.COLOR_MAGENTA, -1)
+        curses.init_pair(3, curses.COLOR_YELLOW, -1)
+        curses.init_pair(4, curses.COLOR_RED, -1)
+        curses.init_pair(5, curses.COLOR_RED, -1)
+        curses.init_pair(15, curses.COLOR_MAGENTA, -1)

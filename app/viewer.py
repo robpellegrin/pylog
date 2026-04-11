@@ -30,7 +30,7 @@ class LogViewer:
     VIEW_TOP = 3
 
     def __init__(self, app):
-        self.stdscr = app.stdscr
+        self.stdscr: curses.window = app.stdscr
         self.height, self.width = self.stdscr.getmaxyx()
 
         self.win = curses.newwin(self.height, self.width, 0, 0)
@@ -41,28 +41,6 @@ class LogViewer:
         self.scroll_offset = 0
         self.selected_line = 0
         self.follow_mode = True
-
-        self._init_colors()
-
-    def _init_colors(self):
-
-        self.stdscr.nodelay(True)
-        self.stdscr.timeout(100)
-
-        curses.start_color()
-        curses.use_default_colors()
-
-        # Hide cursor
-        curses.curs_set(0)
-
-        # Define color pairs
-        curses.init_pair(0, curses.COLOR_WHITE, -1)
-        curses.init_pair(1, curses.COLOR_CYAN, -1)
-        curses.init_pair(2, curses.COLOR_MAGENTA, -1)
-        curses.init_pair(3, curses.COLOR_YELLOW, -1)
-        curses.init_pair(4, curses.COLOR_RED, -1)
-        curses.init_pair(5, curses.COLOR_RED, -1)
-        curses.init_pair(15, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
 
     def _split_line(self, line: str) -> Optional[LogLine]:
         pattern = r"^(?P<date>\S+ \S+)\s+\[(?P<level>\w+)\]\s+(?P<message>.*)$"
