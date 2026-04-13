@@ -40,7 +40,6 @@ class App:
                 self.window.selected_line = max(0, len(self.window.lines) - 1)
 
             self.window.draw()
-            curses.doupdate()
 
     def _init_colors(self):
         curses.start_color()
