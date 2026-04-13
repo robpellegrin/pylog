@@ -24,6 +24,10 @@ class LogMonitor:
         self._last_check: float = 0.0
         self._poll_interval = 1.0
 
+    @property
+    def name(self) -> str:
+        return str(self._file.name)
+
     def read(self) -> list[str]:
         with open(self._file, 'r', encoding='UTF-8') as file:
             return list(file.readlines())
@@ -50,7 +54,3 @@ class LogMonitor:
 
     def __iter__(self):
         return iter(self.read())
-
-    @property
-    def name(self) -> str:
-        return str(self._file.name)
