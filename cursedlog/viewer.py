@@ -10,6 +10,7 @@ import curses
 import logging
 import re
 from collections import namedtuple
+from contextlib import contextmanager
 from typing import Optional
 
 from cursedlog.monitor import LogMonitor
@@ -17,6 +18,15 @@ from cursedlog.monitor import LogMonitor
 log = logging.getLogger(__name__)
 
 LogLine = namedtuple("LogLine", ["date", "level", "message"])
+
+
+@contextmanager
+def curses_attr(win, attr):
+    win.attron(attr)
+    try:
+        yield
+    finally:
+        win.attroff(attr)
 
 
 class LogViewer:
@@ -30,7 +40,7 @@ class LogViewer:
 
     VIEW_TOP = 3
 
-    def __init__(self, app):
+    def __init__(self, app) -> None:
         self.stdscr: curses.window = app.stdscr
         self.height, self.width = self.stdscr.getmaxyx()
 
@@ -61,10 +71,9 @@ class LogViewer:
         self.win.addstr(1, 18, "Level")
         self.win.addstr(1, 30, "Message")
 
-        self.win.attron(curses.color_pair(15) | curses.A_DIM)
-        self.win.hline(2, 1, curses.ACS_HLINE, self.width)
-        self.win.box()
-        self.win.attroff(curses.color_pair(15) | curses.A_DIM)
+        with curses_attr(self.win, curses.color_pair(15) | curses.A_DIM):
+            self.win.hline(2, 1, curses.ACS_HLINE, self.width)
+            self.win.box()
 
         text = self.monitored_file.time_since_last_change()
         last_update = f"Updated: {text}s"
@@ -77,15 +86,14 @@ class LogViewer:
             pass
 
     def _draw_logfile(self) -> None:
-        visible_height = self.height - 4
+        visible_height: int = self.height - 4
 
-        visible_lines = self.lines[
+        visible_lines: list[str] = self.lines[
             self.scroll_offset: self.scroll_offset + visible_height
         ]
 
         for i, raw_line in enumerate(visible_lines):
-            parsed: Optional[LogLine] = self._split_line(raw_line)
-            if not parsed:
+            if not (parsed := self._split_line(raw_line)):
                 continue
 
             y: int = i + self.VIEW_TOP
@@ -112,44 +120,35 @@ class LogViewer:
 
             # Level
             try:
-                self.win.addstr(
-                    y,
-                    18,
-                    level_key,
-                    curses.color_pair(color),
-                )
+                self.win.addstr(y, 18, level_key, curses.color_pair(color))
             except curses.error:
                 pass
 
             # Message
             try:
-                self.win.addnstr(
-                    y,
-                    30,
-                    parsed.message,
-                    self.width - 34,
-                )
+                self.win.addnstr(y, 30, parsed.message, self.width - 34)
             except curses.error:
                 pass
 
     def _draw_indicators(self) -> None:
         visible_height: int = self.height - 4
 
-        has_above: int = self.scroll_offset > 0
-        has_below: int = self.scroll_offset + visible_height < len(self.lines)
+        has_above: bool = self.scroll_offset > 0
+        has_below: bool = self.scroll_offset + visible_height < len(self.lines)
 
-        self.win.attron(curses.color_pair(15) | curses.A_BOLD)
+        with curses_attr(self.win, curses.color_pair(15) | curses.A_BOLD):
+            try:
+                if has_above:
+                    self.win.addstr(
+                        self.VIEW_TOP, max(0, self.width - 3), "↑"
+                    )
 
-        try:
-            if has_above:
-                self.win.addstr(self.VIEW_TOP, self.width - 3, "↑")
-
-            if has_below:
-                self.win.addstr(self.height - 2, self.width - 3, "↓")
-        except curses.error:
-            pass
-
-        self.win.attroff(curses.color_pair(15) | curses.A_DIM)
+                if has_below:
+                    self.win.addstr(
+                        self.height - 2, max(0, self.width - 3), "↓"
+                    )
+            except curses.error:
+                pass
 
     def draw(self) -> None:
         self.height, self.width = self.stdscr.getmaxyx()
@@ -166,13 +165,13 @@ class LogViewer:
             return
 
         new_lines: list[str] = self.monitored_file.read()
-
         self.lines = new_lines
 
     def _adjust_offset(self) -> None:
         """Adjust the top-of-window offset to keep the cursor visible."""
 
-        height = self.win.getmaxyx()[0] - 4
+        height, _ = self.win.getmaxyx()
+        height -= 4
 
         if self.selected_line < self.scroll_offset:
             self.scroll_offset = self.selected_line
