@@ -55,9 +55,8 @@ class LogViewer:
 
     def _split_line(self, line: str) -> Optional[LogLine]:
         pattern = r"^(?P<date>\S+ \S+)\s+\[(?P<level>\w+)\]\s+(?P<message>.*)$"
-        match = re.match(pattern, line)
 
-        if not match:
+        if not (match := re.match(pattern, line)):
             return None
 
         return LogLine(
@@ -159,6 +158,7 @@ class LogViewer:
         self._draw_indicators()
 
         self.win.noutrefresh()
+        curses.doupdate()
 
     def update(self) -> None:
         if not self.monitored_file.has_changed():
